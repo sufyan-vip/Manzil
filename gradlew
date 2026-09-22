@@ -293,9 +293,10 @@ if [ "$MANZIL_EXIT" -ne 0 ]; then
     echo "===== Manzil CI diagnostics: Gradle exited with $MANZIL_EXIT ====="
     # Failure summary first: it says which task blew up and why.
     {
-        grep -hE '^FAILURE|^What went wrong|^\* (What|Where|Try)|^Caused by:|Execution failed for task|^> Task .* FAILED|BUILD FAILED' "$MANZIL_LOG" 2>/dev/null | head -60
-        echo "--- last 60 lines of Gradle output ---"
-        tail -n 60 "$MANZIL_LOG" 2>/dev/null
+        grep -hE '^FAILURE|^What went wrong|^\* (What|Where|Try)|^Caused by:|Execution failed for task|^> Task .* FAILED|BUILD FAILED|^> ' "$MANZIL_LOG" 2>/dev/null |
+            grep -vE '^[[:space:]]*(at |\.\.\. [0-9]+ more)' | head -80
+        echo "--- last 40 lines of Gradle output (stack frames removed) ---"
+        grep -vE '^[[:space:]]*(at |\.\.\. [0-9]+ more)' "$MANZIL_LOG" 2>/dev/null | tail -n 40
     } | manzil_emit_chunks error summary 5
     # Then every compiler / lint diagnostic we can find.
     {
