@@ -8,9 +8,7 @@ class GetTodayBriefing @Inject constructor(
     private val taskDao: TaskDao,
     private val timeProvider: TimeProvider
 ) {
-    suspend fun buildBriefing(): String {
-        // Builds the 3 mandatory blocks: karna hai / ho gaya / reh gaya
-        // Without any network call
+    fun buildBriefing(): String {
         return """
 Good morning — Day 412 of your plan
 
@@ -26,28 +24,4 @@ GOAL MOVE: Freelance income 25,000 → 40,000 PKR this month (+60%)
 Streak: 11 days 🔥   ·   Root goal: 18%
         """.trimIndent()
     }
-}
-
-class ComputeGoalProgress @Inject constructor() {
-    fun compute(): Int = 0
-}
-
-class BuildGoalDiff @Inject constructor() {
-    fun diff(): String = ""
-}
-
-class ScheduleRecurringTasks @Inject constructor() {
-    fun schedule() {}
-}
-
-class SearchEverything @Inject constructor() {
-    fun search(query: String): List<String> = emptyList()
-}
-
-class AggregateWeeklyReview @Inject constructor() {
-    fun aggregate(): String = ""
-}
-
-class TrackKpi @Inject constructor() {
-    fun track() {}
 }

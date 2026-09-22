@@ -29,26 +29,6 @@ data class Goal(
     val createdAt: Long,
     val updatedAt: Long,
     val archivedAt: Long? = null,
-    // BS SE Edition additions
-    val isPerpetual: Boolean = true, // No fixed 2030, runs till DONE
+    val isPerpetual: Boolean = true,
     val adaptiveEnabled: Boolean = true
-)
-
-@Entity(tableName = "goal_revisions", indices = [Index("goalId"), Index("createdAt")])
-data class GoalRevision(
-    @PrimaryKey val id: String,
-    val goalId: String,
-    val snapshotJson: String,
-    val changedFieldsJson: String,
-    val changeType: ChangeType,
-    val note: String? = null,
-    val createdAt: Long
-)
-
-@Entity(tableName = "milestones", indices = [Index("goalId")])
-data class Milestone(
-    @PrimaryKey val id: String, val goalId: String,
-    val title: String, val dueDate: LocalDate?,
-    val done: Boolean = false, val doneAt: Long? = null,
-    val sortOrder: Int = 0, val createdAt: Long
 )

@@ -13,20 +13,3 @@ data class ChatRequest(
     @Serializable
     data class Message(val role: String, val content: String)
 }
-
-@Serializable
-data class ChatResponse(
-    val id: String,
-    val choices: List<Choice>
-) {
-    @Serializable
-    data class Choice(val message: Message)
-    @Serializable
-    data class Message(val role: String, val content: String)
-}
-
-@Serializable
-data class ModelError(val error: ErrorDetail) {
-    @Serializable
-    data class ErrorDetail(val message: String, val code: Int? = null)
-}
