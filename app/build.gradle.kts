@@ -24,9 +24,25 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFileProp = project.findProperty("MANZIL_STORE_FILE") as? String
+            if (storeFileProp != null && file(storeFileProp).exists()) {
+                storeFile = file(storeFileProp)
+                storePassword = project.findProperty("MANZIL_STORE_PASSWORD") as? String
+                keyAlias = project.findProperty("MANZIL_KEY_ALIAS") as? String
+                keyPassword = project.findProperty("MANZIL_KEY_PASSWORD") as? String
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            val releaseSigning = signingConfigs.getByName("release")
+            if (releaseSigning.storeFile != null) {
+                signingConfig = releaseSigning
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -101,6 +117,8 @@ dependencies {
     ksp(libs.hilt.work.compiler)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.androidx.room.testing)
