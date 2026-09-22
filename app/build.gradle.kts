@@ -131,3 +131,10 @@ dependencies {
 hilt {
     enableAggregatingTask = true
 }
+
+gradle.taskGraph.afterTask { task, state ->
+    if (state.failure != null) {
+        val rootCause = generateSequence(state.failure as Throwable) { it.cause }.last()
+        println("::error title=Task ${task.path} Failed::${rootCause.message ?: state.failure?.message}")
+    }
+}
