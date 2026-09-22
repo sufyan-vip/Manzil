@@ -39,9 +39,14 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            // Use the release keystore when the MANZIL_* properties are provided,
+            // otherwise fall back to the debug keystore so the produced APK is
+            // still installable instead of ending up as app-release-unsigned.apk.
             val releaseSigning = signingConfigs.getByName("release")
-            if (releaseSigning.storeFile != null) {
-                signingConfig = releaseSigning
+            signingConfig = if (releaseSigning.storeFile != null) {
+                releaseSigning
+            } else {
+                signingConfigs.getByName("debug")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

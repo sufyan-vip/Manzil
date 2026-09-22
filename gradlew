@@ -300,7 +300,7 @@ if [ "$MANZIL_EXIT" -ne 0 ]; then
     } | manzil_emit_chunks error summary 5
     # Then every compiler / lint diagnostic we can find.
     {
-        grep -hE '^e: |error:|^w: .*(error|cannot)|Lint error|unresolved reference|Compilation error' "$MANZIL_LOG" 2>/dev/null | head -400
+        grep -hE '^e: |error:|^w: .*(error|cannot)|Lint error|unresolved reference|Compilation error|^manzil-failure |\.kts?:[0-9]+:[0-9]+:' "$MANZIL_LOG" 2>/dev/null | head -400
     } | manzil_emit_chunks error diagnostics 20
 fi
 
