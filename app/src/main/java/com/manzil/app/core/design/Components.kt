@@ -356,6 +356,7 @@ fun MiniBarChart(
     barColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val maxValue = maxOf(values.maxOrNull() ?: 1, target ?: 0, 1)
+    val targetColor = ManzilColors.warning
     Column(modifier = modifier.fillMaxWidth()) {
         Canvas(
             modifier = Modifier
@@ -379,7 +380,7 @@ fun MiniBarChart(
             if (target != null && target > 0) {
                 val y = (size.height - 8f) * (1f - target.toFloat() / maxValue.toFloat())
                 drawLine(
-                    color = ManzilColors.warning,
+                    color = targetColor,
                     start = Offset(0f, y),
                     end = Offset(size.width, y),
                     strokeWidth = 2f
