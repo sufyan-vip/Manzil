@@ -85,6 +85,6 @@ TASK: Give 1 actionable client hunting strategy for today with:
 - DM/comment script (English, concise, value-based, not spammy)
 - Follow-up plan
 - Expected result in 7 days
-No Fiverr/Upwork unless user explicitly asks.
+NOT Fiverr/Upwork unless the user explicitly asks for them.
 """
 }

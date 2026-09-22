@@ -27,5 +27,8 @@ object NetworkModule {
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
         isLenient = true
+        // OpenRouter rejects a chat completion without "model" and applies its own
+        // defaults for anything we omit, so always send every field explicitly.
+        encodeDefaults = true
     }
 }

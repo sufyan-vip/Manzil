@@ -17,6 +17,11 @@ data class ParsedQuickCapture(
 )
 
 object QuickCaptureParser {
+    // "5pm", "5:30pm", "17:00" — a bare number is never a clock time, otherwise the
+    // digits of "!1" or "#client2" would overwrite the real time.
+    private val CLOCK_TIME = Regex("(\\d{1,2}):(\\d{2})\\s*(am|pm)?", RegexOption.IGNORE_CASE)
+    private val MERIDIAN_TIME = Regex("\\b(\\d{1,2})\\s*(am|pm)\\b", RegexOption.IGNORE_CASE)
+
     fun parse(input: String): ParsedQuickCapture {
         var title = input
         var dueTime: LocalTime? = null
@@ -26,33 +31,38 @@ object QuickCaptureParser {
 
         // Priority: !1 to !4
         Regex("!(\\d)").findAll(input).forEach { match ->
-            priority = match.groupValues[1].toIntOrNull()?.coerceIn(1,4) ?: 2
-            title = title.replace(match.value, "")
+            priority = match.groupValues[1].toIntOrNull()?.coerceIn(1, 4) ?: 2
+            title = title.replace(match.value, " ")
         }
 
         // Goal tag: #client
         Regex("#(\\w+)").findAll(input).forEach { match ->
             goalTag = match.groupValues[1]
-            title = title.replace(match.value, "")
+            title = title.replace(match.value, " ")
         }
 
-        // Time: 5pm, 5:30pm, 17:00
-        Regex("(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)?", RegexOption.IGNORE_CASE).findAll(input).forEach { match ->
-            val hour = match.groupValues[1].toIntOrNull() ?: return@forEach
-            val minute = match.groupValues[2].toIntOrNull() ?: 0
-            val ampm = match.groupValues[3].lowercase()
+        // Time: 5pm, 5:30pm, 17:00 (only the first match wins; clock form first so
+        // "5:30pm" is not read as "30pm")
+        val timeMatch = CLOCK_TIME.find(title) ?: MERIDIAN_TIME.find(title)
+        if (timeMatch != null) {
+            val groups = timeMatch.groupValues
+            val hour = groups[1].toIntOrNull()
+            val minute = groups.getOrNull(2)?.toIntOrNull() ?: 0
+            val ampm = groups.last().lowercase()
             var h = hour
-            if (ampm == "pm" && h < 12) h += 12
-            if (ampm == "am" && h == 12) h = 0
-            if (h in 0..23) {
-                dueTime = LocalTime.of(h, minute)
-                title = title.replace(match.value, "")
+            if (h != null) {
+                if (ampm == "pm" && h < 12) h += 12
+                if (ampm == "am" && h == 12) h = 0
+                if (h in 0..23) {
+                    dueTime = LocalTime.of(h, minute)
+                    title = title.replace(timeMatch.value, " ")
+                }
             }
         }
 
         // Date: friday, monday, today, tomorrow
         val today = LocalDate.now()
-        val lower = input.lowercase()
+        val lower = title.lowercase()
         when {
             "today" in lower -> {
                 dueDate = today
