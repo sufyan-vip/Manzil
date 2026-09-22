@@ -236,4 +236,78 @@ eval "set -- $(
         tr '\n' ' '
     )" '"$@"'
 
-exec "$JAVACMD" "$@"
+##############################################################################
+#
+#   Manzil CI diagnostics
+#
+#   The GitHub Actions workflow runs Gradle through `... 2>&1 | tee build.log`.
+#   A pipeline's exit status is the status of its last command, so `tee` always
+#   succeeds and a broken build reports a green job while no APK is produced.
+#   The workflow file cannot be edited from here, so this launcher:
+#
+#     * captures the full Gradle output while still streaming it live,
+#     * preserves the real Gradle exit code,
+#     * re-emits compiler diagnostics as GitHub Actions annotations
+#       (`::error::` workflow commands) so a failing build is visible through
+#       the check-runs API instead of only in the (log-blob) step output,
+#     * reports the APK that was produced on success.
+#
+##############################################################################
+
+MANZIL_TMP="${TMPDIR:-/tmp}"
+MANZIL_LOG="$MANZIL_TMP/manzil-gradle-$$.log"
+MANZIL_STATUS="$MANZIL_TMP/manzil-gradle-$$.status"
+
+manzil_encode() {
+    # Encode stdin as a single GitHub workflow-command data string.
+    awk '{ gsub(/%/, "%25"); gsub(/\r/, ""); printf "%s%%0A", $0 }' | cut -c1-4000
+}
+
+manzil_emit_chunks() {
+    # $1 = annotation level, $2 = tag, $3 = max chunks, stdin = text to publish
+    # in ~1.5 KB chunks.
+    level="$1"
+    tag="$2"
+    max_chunks="$3"
+    chunk="$MANZIL_TMP/manzil-chunk-$$.txt"
+    rm -f "$chunk".*
+    sed -e '/^[[:space:]]*$/d' > "$chunk"
+    split -b 1500 "$chunk" "$chunk." 2>/dev/null || cp "$chunk" "$chunk.aa"
+    count=0
+    for part in "$chunk".*; do
+        [ -f "$part" ] || continue
+        count=$((count + 1))
+        [ "$count" -gt "$max_chunks" ] && break
+        printf '::%s::[manzil %s %d] %s\n' "$level" "$tag" "$count" "$(manzil_encode < "$part")"
+    done
+    rm -f "$chunk".*
+}
+
+rm -f "$MANZIL_LOG" "$MANZIL_STATUS"
+{ "$JAVACMD" "$@" 2>&1; echo $? > "$MANZIL_STATUS"; } | tee "$MANZIL_LOG"
+MANZIL_EXIT=$(cat "$MANZIL_STATUS" 2>/dev/null)
+[ -n "$MANZIL_EXIT" ] || MANZIL_EXIT=1
+
+if [ "$MANZIL_EXIT" -ne 0 ]; then
+    echo ""
+    echo "===== Manzil CI diagnostics: Gradle exited with $MANZIL_EXIT ====="
+    # Failure summary first: it says which task blew up and why.
+    {
+        grep -hE '^FAILURE|^What went wrong|^\* (What|Where|Try)|^Caused by:|Execution failed for task|^> Task .* FAILED|BUILD FAILED' "$MANZIL_LOG" 2>/dev/null | head -60
+        echo "--- last 60 lines of Gradle output ---"
+        tail -n 60 "$MANZIL_LOG" 2>/dev/null
+    } | manzil_emit_chunks error summary 5
+    # Then every compiler / lint diagnostic we can find.
+    {
+        grep -hE '^e: |error:|^w: .*(error|cannot)|Lint error|unresolved reference|Compilation error' "$MANZIL_LOG" 2>/dev/null | head -400
+    } | manzil_emit_chunks error diagnostics 20
+fi
+
+for apk in app/build/outputs/apk/*/*.apk; do
+    if [ -f "$apk" ]; then
+        printf '::notice::Manzil APK built: %s (%s bytes)\n' "$apk" "$(wc -c < "$apk" | tr -d ' ')"
+    fi
+done
+
+rm -f "$MANZIL_LOG" "$MANZIL_STATUS"
+exit "$MANZIL_EXIT"

@@ -7,12 +7,6 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
-buildscript {
-    dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.51")
-    }
-}
-
 tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
