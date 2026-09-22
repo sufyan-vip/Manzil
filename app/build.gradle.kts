@@ -132,9 +132,20 @@ hilt {
     enableAggregatingTask = true
 }
 
-gradle.taskGraph.afterTask { task, state ->
-    if (state.failure != null) {
-        val rootCause = generateSequence(state.failure as Throwable) { it.cause }.last()
-        println("::error title=Task ${task.path} Failed::${rootCause.message ?: state.failure?.message}")
+tasks.register("reportDebugStatus") {
+    doLast {
+        val logFile = rootProject.file("build.log")
+        val testLogFile = rootProject.file("test.log")
+        val logContent = when {
+            logFile.exists() -> logFile.readLines().takeLast(15).joinToString(" || ")
+            testLogFile.exists() -> testLogFile.readLines().takeLast(15).joinToString(" || ")
+            else -> "Neither build.log nor test.log found"
+        }
+        val safe = logContent.replace("\n", " ").replace("\r", " ").take(800)
+        println("::warning title=BuildTail::$safe")
     }
+}
+
+afterEvaluate {
+    tasks.findByName("assembleDebug")?.finalizedBy("reportDebugStatus")
 }

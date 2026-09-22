@@ -16,19 +16,3 @@ buildscript {
 tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
-
-gradle.buildFinished {
-    val failure = this.failure
-    if (failure != null) {
-        var cause: Throwable? = failure
-        val causes = mutableListOf<String>()
-        while (cause != null) {
-            causes.add("${cause.javaClass.simpleName}: ${cause.message}")
-            cause = cause.cause
-        }
-        val fullMsg = causes.joinToString(" -> ")
-        println("::error title=GradleBuildFailure::${fullMsg.take(500)}")
-    } else {
-        println("::notice title=GradleBuildSuccess::Build finished with SUCCESS for tasks: ${gradle.startParameter.taskNames}")
-    }
-}
