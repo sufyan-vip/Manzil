@@ -131,22 +131,3 @@ dependencies {
 hilt {
     enableAggregatingTask = true
 }
-
-tasks.matching { 
-    it.name in listOf("kspDebugKotlin", "compileDebugKotlin", "mergeDebugResources", "processDebugManifest", "packageDebug", "assembleDebug")
-}.configureEach {
-    doFirst {
-        println("::warning title=TaskStart::Starting ${path}")
-    }
-    doLast {
-        println("::warning title=TaskSuccess::Finished ${path}")
-    }
-}
-
-tasks.named("assembleDebug") {
-    doLast {
-        val rootDir = rootProject.rootDir
-        val apks = rootDir.walkTopDown().filter { it.extension == "apk" }.map { it.relativeTo(rootDir).path }.toList()
-        println("::warning title=APKsInAssembleDebug::Found: $apks")
-    }
-}

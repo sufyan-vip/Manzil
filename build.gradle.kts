@@ -7,14 +7,6 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
-gradle.taskGraph.afterTask { task, state ->
-    if (state.failure != null) {
-        val rootCause = generateSequence(state.failure as? Throwable) { it.cause }.lastOrNull()
-        val msg = (rootCause?.message ?: state.failure?.message ?: "unknown error").replace("\n", " ").take(400)
-        println("::error title=FailedTask ${task.path}::$msg")
-    }
-}
-
 buildscript {
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.51")
