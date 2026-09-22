@@ -43,6 +43,7 @@ data class TodayState(
     val userName: String = "",
     val dateLabel: String = "",
     val planLine: String = "",
+    val dayCounter: Int = 1,
     val briefing: TodayBriefing = TodayBriefing(1, emptyList(), 0, 0, emptyList(), null, 0, 0),
     val briefingText: String = "",
     val tasks: List<DayTask> = emptyList(),
@@ -106,7 +107,7 @@ class TodayViewModel @Inject constructor(
     private fun observeTasks() = viewModelScope.launch {
         repository.observeDayTasks(LocalDate.now()).collect { tasks ->
             _state.value = _state.value.copy(tasks = tasks, loading = false)
-            refreshProgress()
+            runCatching { repository.refreshAllProgress() }
             pushWidget()
         }
     }

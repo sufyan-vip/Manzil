@@ -218,7 +218,7 @@ fun CalendarScreen(
                             onClick = { viewModel.openEvent(event) }
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Column(
+                                Box(
                                     modifier = Modifier
                                         .width(4.dp)
                                         .height(38.dp)
