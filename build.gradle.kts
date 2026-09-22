@@ -38,11 +38,19 @@ val manzilDiagnostics = tasks.register("manzilDiagnostics") {
             .distinct()
             .take(40)
 
-        if (errors.isEmpty()) {
-            println("::notice::Manzil diagnostics: no compiler errors found in the CI logs.")
+        val testFailures = lines
+            .filter { it.contains(" FAILED") || it.contains("AssertionError") }
+            .distinct()
+            .take(30)
+
+        if (errors.isEmpty() && testFailures.isEmpty()) {
+            println("::notice::Manzil diagnostics: no compiler errors and no test failures in the CI logs.")
         }
         errors.forEach { line ->
             println("::error::" + line.replace("\r", " ").take(400))
+        }
+        testFailures.forEach { line ->
+            println("::error::failing test: " + line.trim().take(300))
         }
         lines.takeLast(30).forEach { line ->
             if (line.isNotBlank()) println("::warning::gradle: " + line.trim().take(300))

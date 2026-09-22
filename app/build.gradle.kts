@@ -6,6 +6,39 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+/**
+ * The debug keystore is created on demand. Without it `assembleRelease` would emit an
+ * unsigned APK that no phone can install, which is exactly what breaks most CI setups.
+ */
+val debugKeystoreFile: File = file(System.getProperty("user.home") + "/.android/debug.keystore")
+
+val ensureDebugKeystore = tasks.register("ensureDebugKeystore") {
+    group = "build setup"
+    description = "Creates the Android debug keystore when it is missing."
+    outputs.file(debugKeystoreFile)
+    doLast {
+        if (debugKeystoreFile.exists()) return@doLast
+        debugKeystoreFile.parentFile?.mkdirs()
+        val keytool = File(System.getProperty("java.home"), "bin/keytool").absolutePath
+        val process = ProcessBuilder(
+            keytool, "-genkeypair", "-keystore", debugKeystoreFile.absolutePath,
+            "-storepass", "android", "-keypass", "android",
+            "-alias", "androiddebugkey", "-keyalg", "RSA", "-keysize", "2048",
+            "-validity", "10000", "-dname", "CN=Android Debug,O=Android,C=US"
+        ).redirectErrorStream(true).start()
+        process.inputStream.readBytes()
+        process.waitFor()
+        println("ensureDebugKeystore: generated ${debugKeystoreFile.absolutePath}")
+    }
+}
+
+tasks.matching {
+    it.name == "preBuild" || it.name.startsWith("validateSigning") ||
+        it.name.startsWith("packageDebug") || it.name.startsWith("packageRelease")
+}.configureEach {
+    dependsOn(ensureDebugKeystore)
+}
+
 android {
     namespace = "com.manzil.app"
     compileSdk = 34
@@ -21,16 +54,14 @@ android {
     }
 
     signingConfigs {
-        // A release key can be dropped in via secrets (see README). When it is absent we
-        // fall back to the debug key so `assembleRelease` still yields an installable APK.
-        create("releaseFallback") {
-            val store = file(System.getProperty("user.home") + "/.android/debug.keystore")
-            if (store.exists()) {
-                storeFile = store
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
-            }
+        // Release builds are signed with the Android debug key when no production keystore is
+        // configured, so `assembleRelease` always produces an APK you can actually install.
+        // Drop in your own keystore (see README) before publishing to the Play Store.
+        create("manzilFallbackKey") {
+            storeFile = debugKeystoreFile
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
         }
     }
 
@@ -46,8 +77,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            val store = file(System.getProperty("user.home") + "/.android/debug.keystore")
-            signingConfig = if (store.exists()) signingConfigs.getByName("releaseFallback") else null
+            signingConfig = signingConfigs.getByName("manzilFallbackKey")
         }
     }
 
