@@ -132,20 +132,21 @@ hilt {
     enableAggregatingTask = true
 }
 
-tasks.register("reportDebugStatus") {
+tasks.matching { 
+    it.name in listOf("kspDebugKotlin", "compileDebugKotlin", "mergeDebugResources", "processDebugManifest", "packageDebug", "assembleDebug")
+}.configureEach {
+    doFirst {
+        println("::warning title=TaskStart::Starting ${path}")
+    }
     doLast {
-        val logFile = rootProject.file("build.log")
-        val testLogFile = rootProject.file("test.log")
-        val logContent = when {
-            logFile.exists() -> logFile.readLines().takeLast(15).joinToString(" || ")
-            testLogFile.exists() -> testLogFile.readLines().takeLast(15).joinToString(" || ")
-            else -> "Neither build.log nor test.log found"
-        }
-        val safe = logContent.replace("\n", " ").replace("\r", " ").take(800)
-        println("::warning title=BuildTail::$safe")
+        println("::warning title=TaskSuccess::Finished ${path}")
     }
 }
 
-afterEvaluate {
-    tasks.findByName("assembleDebug")?.finalizedBy("reportDebugStatus")
+tasks.named("assembleDebug") {
+    doLast {
+        val rootDir = rootProject.rootDir
+        val apks = rootDir.walkTopDown().filter { it.extension == "apk" }.map { it.relativeTo(rootDir).path }.toList()
+        println("::warning title=APKsInAssembleDebug::Found: $apks")
+    }
 }
