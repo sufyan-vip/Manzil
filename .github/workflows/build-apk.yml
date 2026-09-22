@@ -1,0 +1,108 @@
+name: Build Manzil APK
+
+on:
+  push:
+    branches: [ main, "arena/**" ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Assemble & Unit Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Resolve Android SDK path
+        run: |
+          set -euo pipefail
+          if [ -z "${ANDROID_SDK_ROOT:-}" ]; then
+            if [ -d "/usr/local/lib/android/sdk" ]; then
+              echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> "$GITHUB_ENV"
+              export ANDROID_SDK_ROOT="/usr/local/lib/android/sdk"
+            elif [ -d "$HOME/Android/Sdk" ]; then
+              echo "ANDROID_SDK_ROOT=$HOME/Android/Sdk" >> "$GITHUB_ENV"
+              export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+            else
+              echo "::error::No Android SDK found on runner"
+              exit 1
+            fi
+          fi
+          echo "Using ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          for c in "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" "$ANDROID_SDK_ROOT/cmdline-tools/bin" "$ANDROID_SDK_ROOT/tools/bin"; do
+            if [ -f "$c/sdkmanager" ]; then echo "$c" >> "$GITHUB_PATH"; break; fi
+          done
+
+      - name: Accept licenses and install SDK packages
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Ensure gradle wrapper jar exists
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          if [ ! -s gradle/wrapper/gradle-wrapper.jar ]; then
+            mkdir -p gradle/wrapper
+            curl -fsSL --retry 3 -o gradle/wrapper/gradle-wrapper.jar \
+              "https://raw.githubusercontent.com/gradle/gradle/v8.6.0/gradle/wrapper/gradle-wrapper.jar"
+          fi
+          ./gradlew --version
+
+      - name: Write local.properties
+        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+
+      - name: ktlint
+        run: ./gradlew ktlintCheck --console=plain || echo "::warning::ktlint reported issues"
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest --console=plain --stacktrace 2>&1 | tee test.log
+
+      - name: Assemble debug APK
+        run: ./gradlew assembleDebug --console=plain --stacktrace 2>&1 | tee build.log
+
+      - name: Print compile errors on failure
+        if: failure()
+        run: |
+          echo "=== Kotlin/Java diagnostics ==="
+          grep -hE "^(e|w): " build.log test.log 2>/dev/null | head -100 || true
+          echo "=== build.log tail ==="
+          tail -200 build.log 2>/dev/null || true
+
+      - name: List artifacts
+        if: always()
+        run: find . -name "*.apk" -type f -exec ls -lh {} \; || echo "No APK produced"
+
+      - name: Upload debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manzil-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: app/build/reports/tests/
+          if-no-files-found: ignore
+          retention-days: 14

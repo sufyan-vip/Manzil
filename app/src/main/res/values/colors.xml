@@ -1,0 +1,12 @@
+<resources>
+    <color name="teal_primary">#0F766E</color>
+    <color name="teal_dark">#115E59</color>
+    <color name="success">#16A34A</color>
+    <color name="warning">#D97706</color>
+    <color name="danger">#DC2626</color>
+    <color name="info">#2563EB</color>
+    <color name="background_light">#FFFBFE</color>
+    <color name="background_dark">#1C1B1F</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_dark">#2B2930</color>
+</resources>
