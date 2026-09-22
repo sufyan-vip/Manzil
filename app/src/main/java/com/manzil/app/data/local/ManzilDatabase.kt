@@ -73,18 +73,18 @@ abstract class ManzilDatabase : RoomDatabase() {
                 // Keep FTS in sync from search_docs
                 db.execSQL("""
                     CREATE TRIGGER IF NOT EXISTS search_docs_ai AFTER INSERT ON search_docs BEGIN
-                        INSERT INTO search_docs_fts(docId, title, body, goalTitle) VALUES (new.id, new.title, new.body, new.goalTitle);
+                        INSERT INTO search_docs_fts(searchDocId, title, body, goalTitle) VALUES (new.id, new.title, new.body, new.goalTitle);
                     END
                 """.trimIndent())
                 db.execSQL("""
                     CREATE TRIGGER IF NOT EXISTS search_docs_ad AFTER DELETE ON search_docs BEGIN
-                        DELETE FROM search_docs_fts WHERE docId = old.id;
+                        DELETE FROM search_docs_fts WHERE searchDocId = old.id;
                     END
                 """.trimIndent())
                 db.execSQL("""
                     CREATE TRIGGER IF NOT EXISTS search_docs_au AFTER UPDATE ON search_docs BEGIN
-                        DELETE FROM search_docs_fts WHERE docId = old.id;
-                        INSERT INTO search_docs_fts(docId, title, body, goalTitle) VALUES (new.id, new.title, new.body, new.goalTitle);
+                        DELETE FROM search_docs_fts WHERE searchDocId = old.id;
+                        INSERT INTO search_docs_fts(searchDocId, title, body, goalTitle) VALUES (new.id, new.title, new.body, new.goalTitle);
                     END
                 """.trimIndent())
             }
