@@ -1,10 +1,11 @@
 package com.manzil.app.notification
 
 /**
- * Builds EN/UR notification text - must have 3 blocks in order: karna hai / ho gaya / reh gaya
- * No network call - local only
+ * Builds EN/UR notification text — the three blocks always appear in order:
+ * karna hai / ho gaya / reh gaya. Local only: a notification must never be empty
+ * because the network failed.
  */
-class BriefingBuilder {
+class BriefingBuilder @javax.inject.Inject constructor() {
     fun buildMorningBriefing(
         dayCounter: Int,
         todayTasks: List<String>,

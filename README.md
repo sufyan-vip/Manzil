@@ -1,75 +1,102 @@
-# Manzil — Your Destination, Daily Tracked — BS SE Edition — 100% Complete
+# Manzil — Your Destination, Daily Tracked
 
-> **BS Software Engineering Edition** — Zero se start, Free methods se goal tak. Perpetual goal engine till DONE, not fixed 2030.
+An offline-first Android app that turns one long-term goal into today's work — and keeps
+running until the goal is **DONE**, not until a fixed year.
 
-Manzil is an offline-first Android app that turns your long-term goal into daily actions. It auto-adjusts tasks, learns from your progress, and uses AI to keep you on track until your goal is DONE.
+> Built for the zero-to-goal path: skills → portfolio → first paying clients → a software house.
+> Every feature works without internet. The only network call in the whole app is OpenRouter,
+> with your own optional key.
 
-## ✅ 100% Requirements Complete — All M0-M7
+---
 
-### M0 Bootstrap ✅
-- Gradle 8.6 + AGP 8.3.2 + Kotlin 1.9.22 + Compose BOM 2024.06.00 + Hilt 2.51 + KSP 1.9.22-1.0.17 + Room 2.6.1 + FTS4 + DataStore 1.0.0 + Security Crypto 1.1.0-alpha06 + WorkManager 2.9.0 + Navigation 2.7.7 + Coroutines 1.8.0 + OkHttp 4.12.0 + Serialization 1.6.3 + Vico 1.13.1 + Glance 1.0.0 + JUnit 4.13.2 + Turbine 1.1.0 + MockWebServer + ktlint 12.1.0
-- minSdk 26, compileSdk 34, targetSdk 34, package com.manzil.app
-- 4-tab bottom nav + FAB + Top bar search/AI/settings + 5th tab Clients (BS SE Edition)
-- .gitignore, DECISIONS.md, 3 workflow files exactly as spec
+## What you get (1.1.0)
 
-### M1 Data layer + Settings shell ✅
-- Full Room schema: 15 entities (Goal, GoalRevision, Milestone, Task, TaskInstance, TimeEntry, CalendarEvent, JournalEntry, DailyReview, Habit, HabitLog, KpiSnapshot, SearchDoc, SearchDocFts, NotificationLog, Setting) + 9 DAOs + Converters + FTS4 triggers via RoomDatabase.Callback.onCreate (goals/tasks → search_docs → search_docs_fts) real-time without manual re-index
-- SecretVault EncryptedSharedPreferences Keystore-backed never plain DataStore never logged never committed never in backups
-- Settings: OpenRouter API key masked sk-or-v1-••••••••4f2a eye toggle Save/Test/Remove green lock, Test calls GET /api/v1/models cheap no tokens latency+account name 401 invalid, Model picker dropdown from /api/v1/models chat-capable sorted context length Free badge remembers choice default openrouter/auto, Usage requests today soft cap slider hard-stop toggle
-- Onboarding BS SE: 4 steps — Personal Info (Name, University COMSATS Sahiwal, Semester), Goal Info (Main Goal flexible perpetual not fixed 2030, Target Date), Skills & Time (Current Skills, Daily Deep Work Hours, Preferred Platforms Instagram LinkedIn Facebook X Reddit Discord), Notifications & Finish (Morning 07:00 Evening 21:30, Smart Features list auto-rollover AI strict task manager latest info modern client hunt offline+online premium UI)
-- SeedData: KPI targets from spec (savings 55L, capital 59.78L, income Y1 50k/mo Y2 120k/mo MRR 3.5L/mo intl clients 3 local AMC 10 team 5 GitHub 20 Upwork reviews 5 CGPA 3.0 deep-work 25h/week) + Default Habits Code Daily English Practice Send Proposals GitHub Commit
+| Screen | What actually works |
+|---|---|
+| **Onboarding** | 4 steps (you → goal → skills/time → reminders). Finishing it creates a real starter plan: root goal, 6 sub-goals, 8 milestones, 6 tasks for today, KPI targets and 4 habits. Your own words replace the placeholder goal title. |
+| **Today** | Live clock + "Day N of your plan", the same briefing the morning notification sends (Do today / Done yesterday / Still pending / Goal move / Streak), focus timer with Start-Pause-Resume-Stop that writes a real `TimeEntry` and rolls minutes into the task and its goal, today's plan with checkboxes, reorder, postpone, 3 progress rings, 12-week heatmap, streak, calendar strip, keystone habits, yesterday's leftovers (move / drop) and quick capture with live parsing preview. |
+| **Tasks** | Five filters (Today / Upcoming / Overdue / Done / All) with live counts, full editor (title, notes, date, time, P1-P4, estimate, goal, repeat), recurring tasks with real RFC-5545-style expansion for the next 60 days, postpone, delete, offline. |
+| **Calendar** | Month grid with load dots (green ≤3 / amber ≤6 / red 7+), week time-grid with a live "now" row, agenda for the next 14 days, tap a slot to create an event, tap a block to edit, overlap detection with a warning stripe, and one tap to turn a task into a real calendar block. |
+| **Goals** | Goal tree with progress rings, sub-goals, milestones you can tick off, metric goals with a live bar, slipping detection ("slipping 12d"), pause / resume / mark done, and full CRUD. |
+| **Goal Pulse** | Reverse-chronological feed of every change: created / updated / progress / metric / status, with old value struck through in red and the new value in green. Filters for this week / month / all, plus "Explain changes" (local summary, AI-polished when a key exists). |
+| **KPI dashboard** | 12 targets seeded from your plan (savings 55,00,000 · capital 59,78,000 · income 50k→120k · MRR 3,50,000 · clients · team · GitHub · Upwork · CGPA · deep work), each with progress bar, sparkline and an "add reading" sheet. |
+| **Time tracking** | 14-day bar chart, weekly target vs actual, per-goal rollup, full ledger, manual entries, delete, restart a timer from any entry. |
+| **Journal** | Mood 1-5, wins, blockers, notes, auto summary of the day, history, and a weekly review that computes real numbers (done/planned, focus minutes, habit %, goal changes) and turns the three priorities into tasks with one tap. |
+| **AI Coach** | Four actions — Plan my day, Weekly review, Explain changes, Unblock me — plus free chat. Works **without** a key (local plan from the adaptive engine). With a key it uses OpenRouter, maps every error to a human sentence, and degrades gracefully. |
+| **Client hunt** | Today's free client action with an exact script, follow-up and expected result, plus a playbook for Instagram, Facebook groups, LinkedIn, X, WhatsApp and walk-ins — all one tap away from becoming a real task. |
+| **Free tools** | The 12-week zero-to-goal roadmap and every free tool (dev, learning, client hunting, business). |
+| **Roadmap import** | Paste markdown → `##` becomes goals, `###` sub-goals, `- [ ]` tasks, table rows with numbers become KPI targets. Preview before importing. |
+| **Settings** | OpenRouter key (Keystore-encrypted, masked, test connection, remove), model browser with free models first, theme (system/light/dark) + dynamic colour, language (English / Roman Urdu output, plus a shortcut to the phone's language setting), notification toggles and times, exact-alarm status, test notification, profile, deep-work targets, JSON/CSV export, JSON import, starter roadmap, erase everything. |
+| **Notifications** | Morning briefing and evening review through `AlarmManager.setExactAndAllowWhileIdle` with an automatic inexact fallback, a WorkManager safety net, boot re-registration, 5 channels, and hard anti-nag rules: max 6 a day, never 23:00-07:00, no duplicates. Every notification is stored in a log. |
+| **Widget** | A home-screen widget with today's pending tasks, done count and streak. |
+| **Offline** | Everything above, always. No account, no analytics, no ads, no crash reporting. |
 
-### M2 TODAY + Calendar + Tasks ✅
-- TODAY: Live header date day-of-week live clock ticking every second while resumed Day N counter from root goal startDate targetDate, Briefing card same as morning notification with Regenerate with AI button if key, Focus block one task focus of day big Start/Pause/Stop timer elapsed every second On Stop writes TimeEntry adds to Task.actualMinutes rolls up to goal, Today's plan list TaskInstances+events checkbox priority dot goal chip drag handle reorder Swipe right done Swipe left postpone day picker, Progress strip 3 rings Today done/planned This week Root goal %, Streak card consecutive days ≥1 completed 12-week GitHub heatmap streak at risk warning after 20:00 if nothing done, Quick capture always-visible text field natural-language parsing "proposal 5pm friday !1 #client" → title proposal due Fri 17:00 priority 1 goal matched #client fuzzy match unit tests, Yesterday's leftovers not done yesterday Move to today/Drop
-- Calendar: Day/3-Day/Week/Month/Agenda segmented control pinch zoom Day↔Week↔Month, red now line moves real time every 30s auto-scroll now±1h, Week/Day renders CalendarEvents + scheduled TaskInstances hatched blocks, Drag reschedule change time + drag to another day column change date resizing block changes duration Every change persists immediately writes TaskInstance.movedFrom, Conflict detection overlapping warning stripe snackbar "2 events overlap", Tap empty slot create event sheet Tap block detail sheet, Month dots per day coloured load green ≤3 amber 4-6 red 7+ long-press Plan this day, Agenda infinite list grouped Today/Tomorrow/This week/Later sticky headers, Optional read-only device calendar READ_CALENDAR opt-in greyed never write
-- Tasks: Full CRUD subtasks 1 level notes priority P1-P4 colour estimated minutes goal/milestone linking reminders, RFC-5545 subset implemented yourself in core/recurrence/ FREQ=DAILY|WEEKLY|MONTHLY|YEARLY INTERVAL BYDAY MO,TU... BYMONTHDAY COUNT UNTIL Expand into TaskInstance rows 60 days ahead refreshed nightly Worker and on app start Editing one occurrence edits only that instance edit series edits Task and re-expands, Views List grouped Today/Tomorrow/This week/Later/No date Kanban TODO→IN_PROGRESS→DONE Priority Matrix Eisenhower 2x2, Bulk actions multi-select complete/reschedule/re-prioritise/delete, Postpone semantics movedFrom so app can later report "you postponed this 4 times" nudge not nag
-- Time: TimerController singleton survives process death via DataStore+timestamp foreground-service-free approach using timestamps, Start from TODAY from task or ad-hoc Deep work React course, Auto-stop protection timer >4h no interaction posts notification Still working? auto-pauses at 6h, Time screen daily bar chart last 14 days per-goal rollup donut focus minutes today vs 7-day avg weekly total vs 25h/week target progress bar, Manual entry+edit+delete imported flagged IMPORTED
+### Deliberately not included (and why)
 
-### M3 Goals + GOAL PULSE + Search + Notifications ✅
-- Goals: Tree view root→sub→milestones collapsible circular progress ring per node, Progress computed ComputeGoalProgress leaf=done milestones/total milestones weighted by task completion if no milestones parent=average children weighted by priority reactive whenever task/milestone changes, Metric goals with metricTarget live bar metricCurrent/metricTarget plus sparkline from KpiSnapshot history, Overdue goals past targetDate not DONE red left border Slipping N days late chip
-- GOAL PULSE: reverse-chron feed GoalRevisions grouped by day filtered this week/month/all, Each entry colour-coded diff card 🟢 CREATED New goal added Land first Upwork client 🔵 UPDATED field-level diff chips targetDate 2030-06-01→2030-09-01 old struck through red new green 📈 PROGRESS Progress moved 42%→55% (+13) mini bar anim 💰 METRIC Monthly income 25k→40k PKR (+60%) 🟡 STATUS Paused/Resumed/Dropped 🔴 DELETED greyed Undo 10s window, Weekly Goal Digest card top This week 2 goals added 1 deadline moved 3 milestones closed progress +7% 1 goal slipping, If OpenRouter key exists button Explain what changed sends diff JSON to model renders 3-4 lines plain-Urdu/English interpretation, Filtering chips by goal by change type only slipping goals
-- Search: One search field reachable every screen top-bar icon + own tab, Instant 150ms debounce results stream as you type target <50ms query on 5000 docs Show query time debug chip long-press field, Backed by Room FTS4 MATCH prefix matching term* ranked bm25() boosted title×3 goal title×2 recency×1.2, Searches across goals tasks milestones calendar events journal entries KPI notes Results grouped by type icons counts, Filters row type chips All/Goals/Tasks/Events/Journal date range goal status open/done, Recent searches last 10 persisted and saved searches named filter presets e.g. Overdue client work, Semantic mode toggle only visible when OpenRouter key exists sends query+top 30 local titles to model for re-ranking did you mean Must never block local results local results render first AI re-ordering arrives async shimmer, Empty state suggestions no-results Create task titled shortcut, Keyboard Enter jumps first result hardware Ctrl+K opens search
-- Notifications: Channels briefing HIGH review DEFAULT reminders HIGH streak DEFAULT ai LOW created at first launch, Scheduling AlarmManager.setExactAndAllowWhileIdle for time-critical briefing reminders with WorkManager periodic fallback BootReceiver re-registers after reboot RECEIVE_BOOT_COMPLETED manifest Request SCHEDULE_EXACT_ALARM USE_EXACT_ALARM degrade to inexact with warning banner Settings if denied, Morning briefing default 07:00 user-configurable skipped rest day mandatory 3 blocks yeh karna hai yeh ho gaya yeh reh gaya in order EN + UR Roman, BriefingBuilder composes text from local data without network If OpenRouter key exists and AI briefing enabled local text sent to model rewritten warmer tone on any failure local text used ordering hard requirement notification must never be empty because network failed, Evening review default 21:30 Aaj ka hisaab 4/6 done 67% Reh gaya... Focus time 3h20m 7-day avg 2h45m Kal ka pehla kaam React useEffect Actions Log day Move leftovers Done for day, Other notifications task reminder N min before exact overdue 19:00 daily digest overdue items streak-at-risk 20:00 if 0 tasks done weekly goal digest Sunday 18:00 links GOAL PULSE goal-slipping alert when goal passes targetDate, Anti-nag max 6/day never 23-07 if user dismisses 3 consecutive briefings without opening auto-suggest reducing frequency every notification Snooze 1h and Quiet this week action Log everything NotificationLog show Notification history debug screen
+- **Hindi/Urdu string packs are partial.** The shell, tabs, notifications and settings are fully
+  translated (English + اردو); deeper screen copy is English. The `values-ur` file is ready to extend.
+- **AI streaming (SSE).** The chat is request/response with a "thinking" indicator instead of
+  token-by-token streaming — fewer moving parts, same answers.
+- **Device-calendar mirroring.** Apps that write to your calendar need broad permissions; Manzil
+  keeps its own calendar and never touches the device one.
+- **Marketplace integrations (Fiverr/Upwork).** Intentional: the playbook is direct outreach.
 
-### M4 AI + Time ✅
-- AI Coach: Chat screen streaming SSE from OpenRouter message history persisted locally per-conversation goal context injection, Four built-in actions buttons not just chat Plan my day sends today's pending tasks calendar energy/mood last 7 days completion rate receives ranked plan with time blocks One tap applies creates TaskInstance times Weekly review sends week's DailyReviews+goal diffs receives wins/slippage/next week's 3 priorities Explain what changed used by GOAL PULSE Unblock me user names blocker model returns 3 concrete next actions, All prompts live PromptLibrary.kt named constants {placeholders} Prompts instruct model answer in user's chosen language English or Roman Urdu brutally concise max 120 words for actions, Never send API key anywhere except Authorization header Never log request bodies, Cost guard Settings shows estimated token/credit usage counter per day soft cap default 50 requests/day hard stop clear message, Acceptance invalid key every AI surface friendly error state rest app unaffected No key buttons hidden or show Add key in Settings
-- Strict Adaptive Prompts BS SE Edition: SMART_RESCHEDULER auto-move tomorrow reason split suggestion latest info obsolete check, LATEST_INFO_UPDATER fetch latest 2026-27 stacks client hunting beyond Fiverr/Upwork Sahiwal market 3 task updates, MODERN_CLIENT_HUNT Instagram/FB/LinkedIn/X/Reddit/Discord NOT Fiverr/Upwork primary exact DM script follow-up expected 7 days, Perpetual till DONE not fixed 2030, Latest info sync weekly, Modern client hunting free methods
+---
 
-### M5 KPI + Journal + Widgets + Roadmap Import + Client Hunt ✅
-- Roadmap Import: screen paste Markdown or pick .md via SAF, RoadmapImporter parses ##/### headings into goal tree checkbox lines - [ ] into tasks table rows currency/number+label into KPI targets Show preview tree checkboxes before committing Must successfully import document shaped like user's Sahiwal roadmap into ≥20 goals and ≥40 tasks Write unit test with 40-line fixture proving this, On first launch seed KPI targets from spec automatically, Acceptance fresh install 60 seconds user sees populated GOALS tab and TODAY briefing
-- Widgets Glance: Today widget 4x2 date top 3 tasks checkboxes streak flame focus timer status Tapping checkbox completes task and refreshes widget, Streak widget 2x2 big streak number+7-day dots, Refresh on data change WorkManager addContentTrigger-style enqueue update after any write + every 30 min
-- Journal: Daily entry mood 1-5 emoji wins bulleted blockers bulleted free note Pre-filled with today's done/pending lists, Weekly review screen 7-day score trend focus-hours total goal-diff summary habit heatmap and with AI generated narrative + 3 priorities for next week that can be one-tapped into tasks
-- KPI Dashboard: Grid KPI cards seeded from spec savings MRR clients income GitHub projects CGPA deep-work hours Each card current value target progress bar sparkline from KpiSnapshot last-updated tap→add reading sheet, Single Weekly check-in flow walks through all KPIs in 60 seconds writes all snapshots at once mechanism that keeps 4-year plan honest
-- Client Hunt: Modern Client Hunting screen Instagram DM outreach Facebook Groups LinkedIn outbound 20/day X/Twitter build in public Reddit Discord IndieHackers Product Hunt Google Business WhatsApp Business free methods exact scripts follow-up expected 7 days, No Fiverr/Upwork torture, Free methods
+## Architecture
 
-### M6 Backup, polish, a11y, i18n ✅
-- Backup JSON schema versioned schemaVersion 1 forward-compatible importer, Excludes SecretVault contents entirely, Optional SAF auto-backup weekly to user-chosen folder with notification on failure
-- UI/UX: calm dense-but-breathable Material 3 expressive Light+dark One accent teal #0F766E semantic success #16A34A warning #D97706 danger #DC2626 info #2563EB, Type MaterialTheme.typography tabular numerals FontFeatureSettings tnum so digits don't jitter, Motion 200ms standard spring for progress rings shared-element transition task row to detail sheet Respect reduce motion, Empty states every list purposeful empty state with one primary action Never blank screen, Accessibility all touch targets ≥48dp every icon button contentDescription minimum contrast 4.5:1 full TalkBack pass TODAY CALENDAR SEARCH, Landscape+tablet two-pane above 600dp width list+detail, Haptics on task completion and timer start/stop
-- i18n: Every user-facing string in strings.xml with values-ur counterpart No hardcoded strings in Composables, Language switch runtime via AppCompatDelegate.setApplicationLocales
-- Free tools: GitHub Free VS Code Trello Google Meet Wave Hetzner lean Rs 15k/mo only AI tools spend direct revenue
+```
+app/src/main/java/com/manzil/app/
+├── core/            adaptive engine (offline planner), formatting, design system, theme,
+│                    recurrence expander, markdown importer, keystore vault, JSON diff
+├── data/
+│   ├── local/       Room: 14 entities, 8 DAOs, converters, seed data
+│   ├── prefs/       DataStore: settings + focus-timer state (timestamps, survives process death)
+│   ├── remote/      OpenRouter (OkHttp + kotlinx.serialization, async, error mapped)
+│   ├── repository/  ManzilRepository (plan/tasks/goals/pulse), InsightsRepository (analytics),
+│   │                SearchRepository (offline ranked search)
+│   └── backup/      JSON export/import + CSV (secrets never included)
+├── domain/          models + use cases
+├── feature/         one package per screen, each with its own ViewModel and UI state
+├── notification/    channels, notifier with anti-nag rules, alarm scheduler, briefing composer,
+│                    receivers, WorkManager safety net
+└── widget/          RemoteViews widget + snapshot store
+```
 
-### M7 Release ✅
-- versionName 1.0.0 versionCode 1, R8 rules, signed release build instructions README, tag v1.0.0, release.yml produces APK artifact, Signing note if repo has no secrets release.yml still builds unsigned release APK intentional build must never fail just because signing absent Add KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD to repo secrets when ready to sign
+Stack: Kotlin 1.9.22 · Compose BOM 2024.06.00 · Material 3 · Hilt 2.51 + KSP · Room 2.6.1 ·
+DataStore 1.0.0 · WorkManager 2.9.0 · Navigation Compose 2.7.7 · OkHttp 4.12.0 ·
+kotlinx.serialization 1.6.3 · minSdk 26 · targetSdk 34 · Gradle 8.6 · AGP 8.3.2.
 
-## Zero to Goal — Free Methods (User Request)
-- All features work offline-first, no cost, AI optional enhancement
-- Development free: VS Code, GitHub Free, Git, Vercel free, Railway free tier, Supabase free, Figma free, Trello free
-- Learning free: CS50x Harvard free, freeCodeCamp free, DigiSkills.pk free Urdu, Odin Project free, YouTube free
-- Client hunting free: Instagram free DM outreach #smallbusiness, Facebook Groups free value posts Sahiwal Business/Pak Freelancers, LinkedIn free 20 personalized/day, X free build in public daily post, Reddit free r/forhire, Discord free dev communities, Indie Hackers free, Product Hunt free, Google Business free local SEO, WhatsApp Business free
-- Business free: Wave free invoicing, Google Workspace free trial, Canva Free, Notion Free, Uptime Kuma free
-- No Fiverr/Upwork fees unless needed direct=20% bachat
-- Perpetual Goal Engine till DONE not fixed 2030, task auto-rollover unfinished→tomorrow reason autoRolledCount, latest info sync weekly market trends
-- Onboarding collects Name, University, Semester, Skills, Main Goal, Daily Hours, Platforms, Notification times — zero se start
+Design system: one accent (teal `#0F766E`), semantic success/warning/danger/info, tabular
+numerals for every counter and timer, taskbar-free cards with 18dp radii, empty states with one
+primary action on every list, 48dp touch targets, `contentDescription` on every icon.
 
-## Tech Stack (Exact — Do Not Substitute)
-Kotlin 1.9.22 JVM 17, Compose + Material3 BOM 2024.06.00, Gradle 8.6 AGP 8.3.2 version catalog, Hilt 2.51 + KSP 1.9.22-1.0.17, Room 2.6.1 KSP FTS4 virtual table, DataStore 1.0.0 + Security Crypto 1.1.0-alpha06, WorkManager 2.9.0 + AlarmManager.setExactAndAllowWhileIdle, Navigation Compose 2.7.7, Coroutines 1.8.0 + Flow, OkHttp 4.12.0 + Serialization-json 1.6.3 no Retrofit, java.time API 26+ minSdk 26 no desugaring, Recurrence RFC-5545 subset yourself no heavy dependency, Charts Vico 1.13.1, Testing JUnit 4.13.2 Turbine 1.1.0 coroutines-test Room testing MockWebServer 4.12.0, Lint ktlint 12.1.0 + Android Lint, SDKs minSdk 26 compileSdk 34 targetSdk 34, Package com.manzil.app
+---
 
 ## Build
-./gradlew assembleDebug
-./gradlew testDebugUnitTest
+
+```bash
+./gradlew assembleDebug          # debug APK  → app/build/outputs/apk/debug/
+./gradlew assembleRelease        # release APK → app/build/outputs/apk/release/
+./gradlew testDebugUnitTest      # 40+ unit tests, all pure JVM
+./gradlew lintDebug
+```
+
+The release build is signed with the Android debug keystore when `~/.android/debug.keystore`
+exists, and the build script creates it automatically if it is missing — so `assembleRelease`
+always produces an **installable** APK. For a Play Store upload, drop in your own keystore
+(see `app/build.gradle.kts`, `signingConfigs`).
+
+### Download the ready APK
+
+- **Releases** → `v1.1.0` assets (`manzil-1.1.0.apk`) — install this one.
+- **Actions → Build Manzil APK → latest run → Artifacts** → `manzil-debug-apk`.
+
+---
 
 ## Privacy
-All data stays in local Room. Only network call is to https://openrouter.ai/api/v1/* with your own key. No analytics, no crash reporting SDK, no telemetry, no ads.
 
-## Free Roadmap
-See core/common/FreeToolsGuide.kt and FreeRoadmap.kt for zero to goal free path.
+All data lives in a local Room database. The API key is encrypted with an AES-256-GCM key that
+never leaves the Android Keystore and is excluded from backups and exports. Nothing is
+analytics-tracked, and the only outbound request the app can make is to
+`https://openrouter.ai/api/v1/*` — and only when you press an AI button with your own key.

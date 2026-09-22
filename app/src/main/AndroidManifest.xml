@@ -63,7 +63,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.TodayWidgetReceiver"
+            android:name=".widget.TodayWidgetProvider"
             android:enabled="true"
             android:exported="false"
             android:label="@string/widget_label">
