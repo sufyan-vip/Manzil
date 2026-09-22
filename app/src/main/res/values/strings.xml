@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">Manzil</string>
+    
+    <!-- Onboarding - BS SE Edition -->
+    <string name="onboarding_welcome">Welcome to Manzil</string>
+    <string name="onboarding_what_building">What are you building?</string>
+    <string name="onboarding_when">When is your goal?</string>
+    <string name="onboarding_remind">How should I remind you?</string>
+    <string name="onboarding_name_hint">Your full name</string>
+    <string name="onboarding_university_hint">University (e.g. COMSATS Sahiwal)</string>
+    <string name="onboarding_semester_hint">Semester (e.g. 1st, 3rd)</string>
+    <string name="onboarding_skills_hint">Your current skills (e.g. HTML, CSS, JS)</string>
+    <string name="onboarding_goal_hint">Your main goal (e.g. Software House, Job, Freelancing)</string>
+    <string name="onboarding_daily_hours">Daily deep work hours</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="onboarding_skip">Skip</string>
+    
+    <!-- Tabs -->
+    <string name="tab_today">Today</string>
+    <string name="tab_calendar">Calendar</string>
+    <string name="tab_goals">Goals</string>
+    <string name="tab_search">Search</string>
+    
+    <!-- Today -->
+    <string name="today_title">Today</string>
+    <string name="today_briefing">Daily Briefing</string>
+    <string name="today_focus">Focus of the Day</string>
+    <string name="today_plan">Today\'s Plan</string>
+    <string name="today_progress">Progress</string>
+    <string name="today_streak">Streak</string>
+    <string name="today_quick_capture">Quick capture… (e.g. proposal 5pm friday !1 #client)</string>
+    <string name="today_leftovers">Yesterday\'s Leftovers</string>
+    <string name="timer_start">Start</string>
+    <string name="timer_pause">Pause</string>
+    <string name="timer_stop">Stop</string>
+    
+    <!-- Goals -->
+    <string name="goals_title">Goals</string>
+    <string name="goal_pulse">Goal Pulse</string>
+    <string name="goal_pulse_desc">What changed in your goals</string>
+    <string name="kpi_dashboard">KPI Dashboard</string>
+    
+    <!-- Calendar -->
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_day">Day</string>
+    <string name="calendar_3day">3-Day</string>
+    <string name="calendar_week">Week</string>
+    <string name="calendar_month">Month</string>
+    <string name="calendar_agenda">Agenda</string>
+    
+    <!-- Search -->
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search goals, tasks, events…</string>
+    <string name="search_recent">Recent searches</string>
+    <string name="search_saved">Saved searches</string>
+    
+    <!-- AI Coach -->
+    <string name="ai_coach">AI Coach</string>
+    <string name="ai_plan_my_day">Plan my day</string>
+    <string name="ai_weekly_review">Weekly review</string>
+    <string name="ai_explain_changes">Explain what changed</string>
+    <string name="ai_unblock_me">Unblock me</string>
+    <string name="ai_regenerate">Regenerate with AI</string>
+    <string name="ai_unavailable">AI unavailable — add your API key in Settings</string>
+    
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_openrouter">OpenRouter API key</string>
+    <string name="settings_openrouter_hint">Paste your key from openrouter.ai/keys</string>
+    <string name="settings_test_connection">Test connection</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_remove">Remove</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_plan">Plan</string>
+    <string name="settings_about">About</string>
+    <string name="settings_morning_time">Morning briefing time</string>
+    <string name="settings_evening_time">Evening review time</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_accent">Accent color</string>
+    
+    <!-- Common -->
+    <string name="action_done">Done</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_save">Save</string>
+    <string name="action_create">Create</string>
+    <string name="empty_today">No tasks for today. Add one or let AI plan your day.</string>
+    <string name="empty_goals">No goals yet. Create your first goal or import roadmap.</string>
+    <string name="empty_search">Type to search across everything</string>
+    <string name="offline_mode">Offline mode — all features work offline</string>
+    
+    <!-- Notifications -->
+    <string name="notif_channel_briefing">Daily briefing</string>
+    <string name="notif_channel_review">Evening review</string>
+    <string name="notif_channel_reminders">Task reminders</string>
+    <string name="notif_channel_streak">Streak alerts</string>
+    <string name="notif_channel_ai">AI insights</string>
+    
+    <!-- New Features -->
+    <string name="feature_adaptive_engine">Adaptive Goal Engine</string>
+    <string name="feature_smart_rescheduler">Smart Rescheduler — auto moves unfinished tasks to tomorrow</string>
+    <string name="feature_modern_clients">Modern Client Hunting: Instagram, Facebook, LinkedIn, X, Reddit, Discord</string>
+    <string name="feature_latest_info">Latest Info Sync — updates tasks with current market trends</string>
+    <string name="feature_premium_ui">Premium UI — Material 3 Expressive</string>
+    <string name="feature_offline_online">Offline + Online</string>
+</resources>
