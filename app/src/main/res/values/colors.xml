@@ -1,12 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="teal_primary">#0F766E</color>
-    <color name="teal_dark">#115E59</color>
-    <color name="success">#16A34A</color>
-    <color name="warning">#D97706</color>
-    <color name="danger">#DC2626</color>
-    <color name="info">#2563EB</color>
-    <color name="background_light">#FFFBFE</color>
-    <color name="background_dark">#1C1B1F</color>
-    <color name="surface_light">#FFFFFF</color>
-    <color name="surface_dark">#2B2930</color>
+    <color name="manzil_window_bg_light">#FFF6F8F7</color>
+    <color name="manzil_window_bg_dark">#FF0E1514</color>
+    <color name="manzil_teal">#FF0F766E</color>
+    <color name="manzil_teal_deep">#FF0B4F4A</color>
+    <color name="manzil_success">#FF16A34A</color>
+    <color name="manzil_warning">#FFD97706</color>
+    <color name="manzil_danger">#FFDC2626</color>
+    <color name="manzil_info">#FF2563EB</color>
+    <color name="widget_bg">#F21A2422</color>
+    <color name="widget_text">#FFE7F2EF</color>
+    <color name="widget_accent">#FF5DD8C7</color>
 </resources>

@@ -38,4 +38,28 @@ class QuickCaptureParserTest {
         assertEquals("", parsed.title)
         assertEquals(2, parsed.priority)
     }
+
+    @Test
+    fun testNumbersInTitleAreNotMistakenForTimes() {
+        val parsed = QuickCaptureParser.parse("Send 10 proposals")
+        assertEquals("Send 10 proposals", parsed.title)
+        assertNull(parsed.dueTime)
+    }
+
+    @Test
+    fun testColonTimeIsParsed() {
+        val parsed = QuickCaptureParser.parse("standup 09:30 tomorrow")
+        assertEquals("standup", parsed.title)
+        assertEquals(9, parsed.dueTime!!.hour)
+        assertEquals(30, parsed.dueTime!!.minute)
+    }
+
+    @Test
+    fun testDescribeSummarisesTheCapture() {
+        val parsed = QuickCaptureParser.parse("proposal 5pm friday !1 #client")
+        val described = QuickCaptureParser.describe(parsed)
+        assertTrue(described.contains("17:00"))
+        assertTrue(described.contains("P1"))
+        assertTrue(described.contains("#client"))
+    }
 }

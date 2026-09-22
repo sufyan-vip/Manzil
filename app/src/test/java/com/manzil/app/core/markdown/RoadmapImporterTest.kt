@@ -1,86 +1,73 @@
 package com.manzil.app.core.markdown
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class RoadmapImporterTest {
 
     private val importer = RoadmapImporterFull()
 
     @Test
-    fun test40LineFixture() {
+    fun headingsBecomeGoalsAndChecklistsBecomeTasks() {
         val fixture = """
 ## Phase 0 - Foundation
-### Learn HTML
-- [ ] Build 5 static sites
-- [ ] Git & GitHub
-### Learn CSS
-- [ ] Flexbox/Grid
-- [ ] 3 responsive sites
-## Phase 1 - JavaScript
-### JS Basics
-- [ ] ES6+ features
-- [ ] DOM manipulation
-- [ ] Fetch API
-### React
-- [ ] React hooks
-- [ ] Next.js
-- [ ] Tailwind
-## Phase 2 - Backend
-### Node.js
-- [ ] Express
-- [ ] REST APIs
-- [ ] PostgreSQL
-### WordPress
-- [ ] Elementor
-- [ ] WooCommerce
-## Phase 3 - Freelancing
-### Upwork Profile
-- [ ] 100% complete profile
-- [ ] 3 portfolio items
-- [ ] 10 proposals/day
-### Local Market
-- [ ] 3 free websites
-- [ ] WhatsApp Business
-## Phase 4 - Scale
-### Retainer Model
-- [ ] Convert clients to retainer
-- [ ] 2-3 retainer clients
-### Team
-- [ ] Hire 1 junior
-- [ ] Task delegation
-## KPIs
-| Metric | Target | Unit |
-| Savings | 55,00,000 | PKR |
-| MRR | 3,50,000 | PKR |
-| Clients | 3 | count |
+### Setup
+- [x] Create GitHub profile
+- [ ] Install VS Code
+## Phase 1 - First money
+### Outreach
+- [ ] Send 10 Instagram DMs
+- [ ] Post in 2 Facebook groups
+| Savings target | 5500000 | PKR |
+| MRR target | 350000 | PKR |
         """.trimIndent()
 
         val result = importer.import(fixture)
-        // Should parse headings into goals, checkboxes into tasks, tables into KPIs
-        assertTrue("Goals should be >=5", result.goals.size >= 5)
-        assertTrue("Tasks should be >=10", result.tasks.size >= 10)
-        assertTrue("KPIs should be >=1", result.kpis.size >= 1)
+
+        assertEquals(4, result.goals.size)
+        assertEquals(4, result.tasks.size)
+        assertTrue(result.tasks.first().done)
+        assertEquals(2, result.kpis.size)
+        assertEquals(5500000.0, result.kpis.first().target, 0.01)
         assertTrue(importer.validateImport(result))
     }
 
     @Test
-    fun testSahiwalRoadmapShape() {
-        // Simulate Sahiwal roadmap shape: headings + tables + checklists → ≥20 goals and ≥40 tasks
-        // For test, we create a larger fixture
-        val largeFixture = buildString {
-            repeat(20) { i ->
-                appendLine("## Goal $i")
-                appendLine("### Subgoal $i.1")
-                appendLine("- [ ] Task $i.1")
-                appendLine("- [ ] Task $i.2")
-                appendLine("- [x] Task $i.3 done")
+    fun bigRoadmapShapeIsSupported() {
+        val large = buildString {
+            repeat(20) { index ->
+                appendLine("## Goal $index")
+                appendLine("### Sub-goal $index")
+                appendLine("- [ ] Task $index A")
+                appendLine("- [ ] Task $index B")
             }
-            appendLine("| Savings | 55,00,000 | PKR |")
-            appendLine("| MRR | 3,50,000 | PKR |")
+            appendLine("| Income target | 50000 | PKR |")
         }
-        val result = importer.import(largeFixture)
+        val result = importer.import(large)
         assertTrue(result.goals.size >= 20)
         assertTrue(result.tasks.size >= 40)
+        assertEquals(1, result.kpis.size)
+    }
+
+    @Test
+    fun subHeadingsKeepTheirParent() {
+        val result = importer.import(
+            """
+## Root goal
+### Child goal
+- [ ] A task
+            """.trimIndent()
+        )
+        assertEquals("Root goal", result.goals[0].title)
+        assertEquals("Root goal", result.goals[1].parent)
+    }
+
+    @Test
+    fun emptyInputIsHarmless() {
+        val result = importer.import("")
+        assertTrue(result.goals.isEmpty())
+        assertTrue(result.tasks.isEmpty())
+        assertTrue(result.kpis.isEmpty())
     }
 }

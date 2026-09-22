@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <exclude domain="sharedpref" path="secret_vault_prefs" />
-    <exclude domain="database" path="manzil.db" />
+    <!-- The API key lives in this DataStore file and is encrypted with an Android Keystore
+         key, which never leaves the device. Never back it up. -->
+    <exclude domain="file" path="datastore/manzil_secrets.preferences_pb" />
 </full-backup-content>

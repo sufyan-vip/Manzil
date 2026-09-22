@@ -8,7 +8,10 @@ import java.time.LocalTime
 
 enum class TaskStatus { TODO, IN_PROGRESS, DONE, CANCELLED, BLOCKED }
 
-@Entity(tableName = "tasks", indices = [Index("goalId"), Index("dueDate"), Index("status")])
+@Entity(
+    tableName = "tasks",
+    indices = [Index("goalId"), Index("dueDate"), Index("status"), Index("completedAt")]
+)
 data class Task(
     @PrimaryKey val id: String,
     val title: String,
@@ -16,7 +19,7 @@ data class Task(
     val goalId: String? = null,
     val milestoneId: String? = null,
     val parentTaskId: String? = null,
-    val dueDate: LocalDate?,
+    val dueDate: LocalDate? = null,
     val dueTime: LocalTime? = null,
     val startDate: LocalDate? = null,
     val estimatedMinutes: Int? = null,
@@ -32,5 +35,6 @@ data class Task(
     val autoRolledCount: Int = 0,
     val lastAiReason: String? = null,
     val clientPlatform: String? = null,
-    val isLatestInfoUpdated: Boolean = false
+    val isLatestInfoUpdated: Boolean = false,
+    val sortOrder: Int = 0
 )

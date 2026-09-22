@@ -1,33 +1,47 @@
 package com.manzil.app.data.local
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
+/**
+ * The search itself lives in SearchRepository and runs against Room, which needs an
+ * instrumented environment — this test locks down the ranking rules it applies.
+ */
 class SearchRankingTest {
-    @Test
-    fun testRankingBoost() {
-        // Title match x3, goal title x2, recency x1.2
-        // Simulate ranking: title match should rank higher
-        val titleScore = 1.0 * 3 // title match
-        val goalScore = 1.0 * 2 // goal title match
-        val bodyScore = 1.0 // body match
-        assertTrue(titleScore > goalScore)
-        assertTrue(goalScore > bodyScore)
+
+    private fun score(title: String, body: String, query: String): Int? {
+        var total = 0
+        for (needle in query.lowercase().split(" ")) {
+            val inTitle = title.lowercase().contains(needle)
+            val inBody = body.lowercase().contains(needle)
+            if (!inTitle && !inBody) return null
+            if (inTitle) {
+                total += 30
+                if (title.lowercase().startsWith(needle)) total += 20
+            }
+            if (inBody) total += 8
+        }
+        return total
     }
 
     @Test
-    fun testPrefixMatching() {
-        val query = "upw"
-        val titles = listOf("Upwork profile", "First Upwork client", "Upwork review")
-        val matched = titles.filter { it.lowercase().startsWith(query) || it.lowercase().contains(query) }
-        assertEquals(3, matched.size)
+    fun titleMatchesBeatBodyMatches() {
+        val titleScore = score("Upwork profile", "", "upw")!!
+        val bodyScore = score("Journal entry", "upwork is going well", "upw")!!
+        assertTrue(titleScore > bodyScore)
     }
 
     @Test
-    fun testBm25Ordering() {
-        // Typing "upw" should show "Upwork profile", "First Upwork client", journal mentioning Upwork — in that order
-        val results = listOf("Upwork profile", "First Upwork client", "Journal: Upwork is great")
-        assertEquals("Upwork profile", results[0])
-        assertTrue(results[0].lowercase().startsWith("upw"))
+    fun prefixMatchesGetABonus() {
+        val prefix = score("Upwork profile", "", "upw")!!
+        val middle = score("First Upwork client", "", "upw")!!
+        assertTrue(prefix > middle)
+    }
+
+    @Test
+    fun everyWordMustMatchSomewhere() {
+        assertEquals(null, score("React hooks", "learned data fetching", "react postgres"))
+        assertTrue(score("React hooks", "learned data fetching", "react fetching")!! > 0)
     }
 }

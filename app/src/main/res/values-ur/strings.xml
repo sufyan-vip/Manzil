@@ -1,36 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">منزل</string>
-    <string name="onboarding_welcome">منزل میں خوش آمدید</string>
-    <string name="onboarding_what_building">آپ کیا بنا رہے ہیں؟</string>
-    <string name="onboarding_when">آپ کا ہدف کب ہے؟</string>
-    <string name="onboarding_remind">میں آپ کو کیسے یاد دلاؤں؟</string>
-    <string name="onboarding_name_hint">آپ کا پورا نام</string>
-    <string name="onboarding_university_hint">یونیورسٹی</string>
-    <string name="onboarding_semester_hint">سمیسٹر</string>
-    <string name="onboarding_skills_hint">آپ کی مہارتیں</string>
-    <string name="onboarding_goal_hint">آپ کا اصل ہدف</string>
-    <string name="onboarding_daily_hours">روزانہ کام کے گھنٹے</string>
-    <string name="onboarding_continue">جاری رکھیں</string>
-    <string name="onboarding_skip">چھوڑیں</string>
+    <string name="app_tagline">آپ کی منزل، روزانہ حساب</string>
+
     <string name="tab_today">آج</string>
+    <string name="tab_tasks">کام</string>
     <string name="tab_calendar">کیلنڈر</string>
     <string name="tab_goals">اہداف</string>
-    <string name="tab_search">تلاش</string>
-    <string name="today_title">آج</string>
+    <string name="tab_more">مزید</string>
+
+    <string name="action_search">تلاش</string>
+    <string name="action_settings">سیٹنگز</string>
+    <string name="action_save">محفوظ کریں</string>
+    <string name="action_cancel">منسوخ</string>
+    <string name="action_delete">حذف کریں</string>
+    <string name="action_add">شامل کریں</string>
+    <string name="action_edit">تبدیل کریں</string>
+    <string name="action_close">بند کریں</string>
+    <string name="action_retry">دوبارہ کوشش</string>
+    <string name="action_back">واپس</string>
+    <string name="action_continue">جاری رکھیں</string>
+    <string name="action_skip">چھوڑیں</string>
+    <string name="action_done">مکمل</string>
+
+    <string name="nav_goal_pulse">گول پلس</string>
+    <string name="nav_kpi">کے پی آئی ڈیش بورڈ</string>
+    <string name="nav_time">وقت کا حساب</string>
+    <string name="nav_journal">ڈائری</string>
+    <string name="nav_weekly">ہفتہ وار جائزہ</string>
+    <string name="nav_ai">اے آئی کوچ</string>
+    <string name="nav_clients">کلائنٹ ہنٹ</string>
+    <string name="nav_tools">مفت ٹولز</string>
+    <string name="nav_import">روڈمیپ امپورٹ</string>
+
+    <string name="today_greeting_morning">صبح بخیر</string>
+    <string name="today_greeting_afternoon">دوپہر بخیر</string>
+    <string name="today_greeting_evening">شام بخیر</string>
+    <string name="today_day_counter">آپ کے پلان کا دن %1$d</string>
     <string name="today_briefing">روزانہ بریفنگ</string>
+    <string name="today_do_today">آج کرنا ہے</string>
+    <string name="today_done_yesterday">کل ہو گیا</string>
+    <string name="today_still_pending">ابھی باقی</string>
     <string name="today_focus">آج کا فوکس</string>
-    <string name="today_plan">آج کا منصوبہ</string>
-    <string name="today_progress">پیش رفت</string>
-    <string name="today_streak">اسٹریک</string>
-    <string name="today_quick_capture">جلدی لکھیں…</string>
-    <string name="today_leftovers">کل کا باقی کام</string>
+    <string name="today_plan">آج کا پلان</string>
+    <string name="today_leftovers">کل کے باقی کام</string>
+    <string name="today_quick_capture">فوری اندراج — مثلاً proposal 5pm friday !1 #client</string>
+    <string name="today_streak_days">%1$d دن کا سلسلہ</string>
+    <string name="today_regenerate">اے آئی سے دوبارہ بنائیں</string>
+    <string name="progress_today">آج</string>
+    <string name="progress_week">ہفتہ</string>
+    <string name="progress_goal">ہدف</string>
     <string name="timer_start">شروع</string>
-    <string name="timer_pause">روکیں</string>
+    <string name="timer_pause">وقفہ</string>
     <string name="timer_stop">بند</string>
-    <string name="goals_title">اہداف</string>
-    <string name="goal_pulse">گول پلس</string>
-    <string name="calendar_title">کیلنڈر</string>
-    <string name="search_title">تلاش</string>
-    <string name="ai_coach">اے آئی کوچ</string>
+
+    <string name="notif_channel_briefing">روزانہ بریفنگ</string>
+    <string name="notif_channel_briefing_desc">صبح کی بریفنگ — کرنا ہے / ہو گیا / رہ گیا</string>
+    <string name="notif_channel_review">شام کا جائزہ</string>
+    <string name="notif_channel_review_desc">آج کا حساب اور کل کا پہلا کام</string>
+    <string name="notif_channel_reminders">کام کی یاد دہانی</string>
+    <string name="notif_channel_reminders_desc">کام کے وقت سے پہلے یاد دہانی</string>
+    <string name="notif_channel_streak">سلسلہ الرٹ</string>
+    <string name="notif_channel_streak_desc">سلسلہ ٹوٹنے کا خطرہ</string>
+    <string name="notif_channel_ai">اے آئی بصیرت</string>
+    <string name="notif_channel_ai_desc">اے آئی انجن کی تبدیلیاں</string>
+    <string name="notif_briefing_title">منزل — آپ کا دن</string>
+    <string name="notif_review_title">آج کا حساب</string>
+    <string name="notif_test_title">ٹیسٹ نوٹیفکیشن</string>
+    <string name="notif_test_body">نوٹیفکیشن کام کر رہے ہیں۔ بریفنگ مقررہ وقت پر آئے گی۔</string>
+
+    <string name="widget_label">منزل آج</string>
+    <string name="widget_description">آج کے کام، مکمل تعداد اور سلسلہ</string>
+    <string name="widget_empty">آج کوئی کام نہیں — منزل میں شامل کریں</string>
+
     <string name="settings_title">سیٹنگز</string>
+    <string name="settings_ai_key">اوپن راؤٹر اے پی آئی کی</string>
+    <string name="settings_ai_model">ماڈل</string>
+    <string name="settings_theme">تھیم</string>
+    <string name="settings_language">زبان</string>
+    <string name="settings_notifications">نوٹیفکیشن</string>
+    <string name="settings_data">ڈیٹا</string>
+    <string name="settings_about">ایپ کے بارے میں</string>
+    <string name="theme_system">سسٹم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">گہرا</string>
+    <string name="language_english">English</string>
+    <string name="language_urdu">اردو</string>
 </resources>

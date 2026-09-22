@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- The journey: a rising path -->
+    <path
+        android:pathData="M31,75 C35,55 47,47 63,41"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- The destination: Manzil -->
+    <path
+        android:pathData="M69,29.5 a7.5,7.5 0 1,0 0.01,0 z"
+        android:fillColor="#FFFFFFFF" />
+</vector>

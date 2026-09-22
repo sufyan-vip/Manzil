@@ -1,163 +1,354 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+
 package com.manzil.app.feature.onboarding
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.manzil.app.core.design.ChipRow
+import com.manzil.app.core.design.KeyValueRow
+import com.manzil.app.core.design.ManzilCard
+import com.manzil.app.core.design.ManzilTextField
+import com.manzil.app.core.design.SectionHeader
+import com.manzil.app.core.theme.ManzilColors
 
-/**
- * BS Software Engineering Edition Onboarding
- * Collects: Name, University, Semester, Skills, Main Goal, Daily Hours, Language, Notification Time
- * As per user request: "Starting ma mara name wagara or information sare ly app muj sa"
- */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(
-    viewModel: OnboardingViewModel = hiltViewModel(),
-    onComplete: () -> Unit = {}
+    onFinished: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    var currentStep by remember { mutableStateOf(0) }
-    val totalSteps = 4
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState())
+            .padding(20.dp)
     ) {
         LinearProgressIndicator(
-            progress = { (currentStep + 1) / totalSteps.toFloat() },
-            modifier = Modifier.fillMaxWidth()
+            progress = { (state.step + 1) / 4f },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp)
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(6.dp))
+        Text(
+            "Step ${state.step + 1} of 4",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(16.dp))
 
-        when (currentStep) {
-            0 -> Step1_PersonalInfo(viewModel)
-            1 -> Step2_GoalInfo(viewModel)
-            2 -> Step3_SkillsAndTime(viewModel)
-            3 -> Step4_NotificationsAndFinish(viewModel)
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            when (state.step) {
+                0 -> {
+                    item {
+                        Text(
+                            "Welcome to Manzil",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Manzil means destination. This app turns one big goal into today's work — " +
+                                "and it keeps running till the goal is DONE, not until a fixed year.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    item {
+                        ManzilCard {
+                            SectionHeader(title = "Who is this plan for?")
+                            Spacer(Modifier.height(10.dp))
+                            ManzilTextField(
+                                value = state.name,
+                                onValueChange = viewModel::updateName,
+                                label = "Your name",
+                                placeholder = "Sufyan"
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            ManzilTextField(
+                                value = state.university,
+                                onValueChange = viewModel::updateUniversity,
+                                label = "University",
+                                placeholder = "COMSATS Sahiwal"
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            ManzilTextField(
+                                value = state.semester,
+                                onValueChange = viewModel::updateSemester,
+                                label = "Semester",
+                                placeholder = "3rd"
+                            )
+                        }
+                    }
+                }
+                1 -> {
+                    item {
+                        Text(
+                            "What are you building?",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Write the goal you actually want — software house, freelancing, remote job, anything.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    item {
+                        ManzilCard {
+                            ManzilTextField(
+                                value = state.mainGoal,
+                                onValueChange = viewModel::updateMainGoal,
+                                label = "Main goal",
+                                placeholder = "Software house in Sahiwal",
+                                singleLine = false,
+                                minLines = 2
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            ManzilTextField(
+                                value = state.targetDate,
+                                onValueChange = viewModel::updateTargetDate,
+                                label = "Target (flexible)",
+                                placeholder = "2028, or when I hit 3.5L/month"
+                            )
+                        }
+                    }
+                    item {
+                        ManzilCard(containerColor = MaterialTheme.colorScheme.primaryContainer) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Filled.Flag,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Perpetual goal engine",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "If a day goes wrong, work is not lost — it rolls to tomorrow with the reason written down. " +
+                                    "The plan adjusts to your real life.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
+                }
+                2 -> {
+                    item {
+                        Text(
+                            "Skills & time",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Manzil uses this to size tasks realistically.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    item {
+                        ManzilCard {
+                            ManzilTextField(
+                                value = state.skills,
+                                onValueChange = viewModel::updateSkills,
+                                label = "Current skills",
+                                placeholder = "HTML, CSS, JavaScript",
+                                singleLine = false,
+                                minLines = 2
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            Text("Daily deep work hours", style = MaterialTheme.typography.labelMedium)
+                            Spacer(Modifier.height(6.dp))
+                            ChipRow(
+                                options = listOf("1h", "2h", "3h", "4h", "6h"),
+                                selectedIndex = listOf(1, 2, 3, 4, 6).indexOf(state.dailyHours).coerceAtLeast(2),
+                                onSelect = { index ->
+                                    viewModel.setDailyHours(listOf(1, 2, 3, 4, 6)[index])
+                                }
+                            )
+                        }
+                    }
+                    item {
+                        ManzilCard {
+                            SectionHeader(title = "Where will you hunt clients?")
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                "Free channels only — no marketplace fees. Pick what you will actually use.",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            ChipRow(
+                                options = state.allPlatforms,
+                                selectedIndex = -1,
+                                onSelect = { index -> viewModel.togglePlatform(state.allPlatforms[index]) }
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            state.selectedPlatforms.forEach { platform ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        Icons.Filled.Check,
+                                        contentDescription = null,
+                                        tint = ManzilColors.success,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                    Text(platform, style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    item {
+                        Text(
+                            "How should I remind you?",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "One morning briefing, one evening review. Nothing else unless you ask.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    item {
+                        ManzilCard {
+                            Text(
+                                "Morning briefing",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            ChipRow(
+                                options = listOf("06:00", "07:00", "08:00", "09:00"),
+                                selectedIndex = listOf("06:00", "07:00", "08:00", "09:00")
+                                    .indexOf(state.morningTime).coerceAtLeast(1),
+                                onSelect = { index ->
+                                    viewModel.setMorning(listOf("06:00", "07:00", "08:00", "09:00")[index])
+                                }
+                            )
+                            Spacer(Modifier.height(14.dp))
+                            Text("Evening review", style = MaterialTheme.typography.titleSmall)
+                            Spacer(Modifier.height(8.dp))
+                            ChipRow(
+                                options = listOf("20:00", "21:00", "21:30", "22:00"),
+                                selectedIndex = listOf("20:00", "21:00", "21:30", "22:00")
+                                    .indexOf(state.eveningTime).coerceAtLeast(2),
+                                onSelect = { index ->
+                                    viewModel.setEvening(listOf("20:00", "21:00", "21:30", "22:00")[index])
+                                }
+                            )
+                        }
+                    }
+                    item {
+                        ManzilCard {
+                            SectionHeader(title = "Ready to start")
+                            Spacer(Modifier.height(8.dp))
+                            KeyValueRow("Name", state.name.ifBlank { "—" })
+                            KeyValueRow("Goal", state.mainGoal.ifBlank { "Software house" })
+                            KeyValueRow("Deep work", "${state.dailyHours}h / day")
+                            KeyValueRow("Briefing", state.morningTime)
+                            KeyValueRow("Review", state.eveningTime)
+                        }
+                    }
+                    item {
+                        ManzilCard(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Filled.Lock,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Your data stays on this phone",
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "No account, no tracking, no ads. An OpenRouter key is optional and only used for AI features.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
         }
-
-        Spacer(Modifier.height(32.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (currentStep > 0) {
-                OutlinedButton(onClick = { currentStep-- }) {
-                    Text("Back")
-                }
+            if (state.step > 0) {
+                TextButton(onClick = viewModel::back) { Text("Back") }
+            }
+            Spacer(Modifier.weight(1f))
+            if (state.step < 3) {
+                Button(
+                    onClick = viewModel::next,
+                    shape = RoundedCornerShape(14.dp)
+                ) { Text("Continue") }
             } else {
-                Spacer(Modifier.width(1.dp))
-            }
-
-            Button(
-                onClick = {
-                    if (currentStep < totalSteps - 1) {
-                        currentStep++
-                    } else {
-                        viewModel.saveOnboarding()
-                        onComplete()
-                    }
+                Button(
+                    onClick = {
+                        viewModel.finish()
+                        onFinished()
+                    },
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Icon(Icons.Filled.Upload, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("Start my plan")
                 }
-            ) {
-                Text(if (currentStep == totalSteps - 1) "Start My Journey" else "Continue")
             }
         }
-    }
-}
-
-@Composable
-fun Step1_PersonalInfo(viewModel: OnboardingViewModel) {
-    var name by remember { mutableStateOf("") }
-    var university by remember { mutableStateOf("") }
-    var semester by remember { mutableStateOf("") }
-
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Welcome to Manzil", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("BS Software Engineering Edition — Let's know you", style = MaterialTheme.typography.bodyLarge)
-
-        OutlinedTextField(value = name, onValueChange = { name = it; viewModel.name = it }, label = { Text("Your full name") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = university, onValueChange = { university = it; viewModel.university = it }, label = { Text("University (e.g. COMSATS Sahiwal)") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = semester, onValueChange = { semester = it; viewModel.semester = it }, label = { Text("Semester (e.g. 1st, 3rd, 5th)") }, modifier = Modifier.fillMaxWidth())
-        
-        Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-            Column(Modifier.padding(16.dp)) {
-                Text("Why we ask?", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Text("So AI can create semester-aware tasks. Exams time pe tasks auto-adjust ho jayenge.", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@Composable
-fun Step2_GoalInfo(viewModel: OnboardingViewModel) {
-    var mainGoal by remember { mutableStateOf("") }
-    var targetDate by remember { mutableStateOf("") }
-
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("What are you building?", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("No fixed 2030 — Your goal lives till you complete it", style = MaterialTheme.typography.bodyMedium)
-
-        OutlinedTextField(value = mainGoal, onValueChange = { mainGoal = it; viewModel.mainGoal = it }, label = { Text("Main Goal (e.g. Software House, Top Freelancer, Remote Job at FAANG)") }, modifier = Modifier.fillMaxWidth(), minLines = 3)
-        OutlinedTextField(value = targetDate, onValueChange = { targetDate = it; viewModel.targetDate = it }, label = { Text("Target Date (Flexible — e.g. 2028, or 'When I hit 5L/month')") }, modifier = Modifier.fillMaxWidth())
-
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Perpetual Goal Engine", fontWeight = FontWeight.Bold)
-                Text("• Goal tab tak chalega jab tak DONE na ho", style = MaterialTheme.typography.bodySmall)
-                Text("• AI har week goal condition check karega", style = MaterialTheme.typography.bodySmall)
-                Text("• Time ke sath latest info se tasks update honge", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@Composable
-fun Step3_SkillsAndTime(viewModel: OnboardingViewModel) {
-    var skills by remember { mutableStateOf("") }
-    var hours by remember { mutableStateOf("3") }
-
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Skills & Time", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-
-        OutlinedTextField(value = skills, onValueChange = { skills = it; viewModel.skills = it }, label = { Text("Current Skills (e.g. HTML, CSS, JS, React)") }, modifier = Modifier.fillMaxWidth(), minLines = 2)
-        OutlinedTextField(value = hours, onValueChange = { hours = it; viewModel.dailyHours = it.toIntOrNull() ?: 3 }, label = { Text("Daily Deep Work Hours") }, modifier = Modifier.fillMaxWidth())
-
-        Text("Client Hunting Preference (Modern — Not Fiverr/Upwork torture):", style = MaterialTheme.typography.titleSmall)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            listOf("Instagram", "LinkedIn", "Facebook", "X/Twitter", "Reddit", "Discord").forEach {
-                FilterChip(selected = viewModel.preferredPlatforms.contains(it), onClick = { viewModel.togglePlatform(it) }, label = { Text(it) })
-            }
-        }
-    }
-}
-
-@Composable
-fun Step4_NotificationsAndFinish(viewModel: OnboardingViewModel) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("How should I remind you?", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("Manzil will tell you: Yeh karna hai / Yeh ho gaya / Yeh reh gaya", style = MaterialTheme.typography.bodyLarge)
-
-        Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Smart Features Enabled:", fontWeight = FontWeight.Bold)
-                Text("✅ Auto-rollover: Unfinished task → Kal ke sath adjust", style = MaterialTheme.typography.bodySmall)
-                Text("✅ AI Strict Task Manager: Condition dekh ke next tasks arrange", style = MaterialTheme.typography.bodySmall)
-                Text("✅ Latest Info Sync: Market trends se tasks update", style = MaterialTheme.typography.bodySmall)
-                Text("✅ Modern Client Hunt: Insta, FB, LinkedIn, X, Reddit, Discord", style = MaterialTheme.typography.bodySmall)
-                Text("✅ Offline + Online: 100% offline, AI online", style = MaterialTheme.typography.bodySmall)
-                Text("✅ Premium UI: Material 3 Expressive", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-
-        OutlinedTextField(value = viewModel.morningTime, onValueChange = { viewModel.morningTime = it }, label = { Text("Morning Briefing Time (e.g. 07:00)") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = viewModel.eveningTime, onValueChange = { viewModel.eveningTime = it }, label = { Text("Evening Review Time (e.g. 21:30)") }, modifier = Modifier.fillMaxWidth())
     }
 }

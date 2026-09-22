@@ -1,12 +1,14 @@
 package com.manzil.app.data.remote
 
 import com.manzil.app.data.remote.openrouter.PromptLibrary
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class PromptLibraryTest {
+
     @Test
-    fun testPromptsContainPlaceholders() {
+    fun planMyDayCarriesEveryPlaceholder() {
         assertTrue(PromptLibrary.PLAN_MY_DAY.contains("{DATE}"))
         assertTrue(PromptLibrary.PLAN_MY_DAY.contains("{TASKS}"))
         assertTrue(PromptLibrary.PLAN_MY_DAY.contains("{MAIN_GOAL}"))
@@ -14,22 +16,30 @@ class PromptLibraryTest {
     }
 
     @Test
-    fun testSystemBase() {
+    fun systemBaseKeepsTheEnginePerpetual() {
         assertTrue(PromptLibrary.SYSTEM_BASE.contains("{LANGUAGE}"))
         assertTrue(PromptLibrary.SYSTEM_BASE.contains("{MAX_WORDS}"))
         assertTrue(PromptLibrary.SYSTEM_BASE.contains("PERPETUAL"))
     }
 
     @Test
-    fun testStrictAdaptivePrompts() {
+    fun reschedulerRollsWorkToTomorrow() {
         assertTrue(PromptLibrary.SMART_RESCHEDULER.contains("Auto-move to tomorrow"))
-        assertTrue(PromptLibrary.MODERN_CLIENT_HUNT.contains("NOT Fiverr/Upwork"))
+    }
+
+    @Test
+    fun clientHuntAvoidsTheMarketplaceGrind() {
+        assertTrue(PromptLibrary.MODERN_CLIENT_HUNT.contains("Fiverr/Upwork"))
         assertTrue(PromptLibrary.MODERN_CLIENT_HUNT.contains("Instagram"))
+    }
+
+    @Test
+    fun latestInfoUpdaterTargetsTheCurrentMarket() {
         assertTrue(PromptLibrary.LATEST_INFO_UPDATER.contains("2026-2027"))
     }
 
     @Test
-    fun testAllPromptsExist() {
+    fun everyPromptExists() {
         assertNotNull(PromptLibrary.PLAN_MY_DAY)
         assertNotNull(PromptLibrary.WEEKLY_REVIEW)
         assertNotNull(PromptLibrary.EXPLAIN_CHANGES)
