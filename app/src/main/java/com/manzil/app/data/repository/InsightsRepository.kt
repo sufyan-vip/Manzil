@@ -134,47 +134,48 @@ class InsightsRepository @Inject constructor(
         val goals = goalDao.allGoals()
         val milestones = goalDao.allMilestones()
         val tasks = taskDao.allActive()
-
-        fun build(goal: Goal): GoalNode {
-            val ownMilestones = milestones.filter { it.goalId == goal.id }.sortedBy { it.sortOrder }
-            val ownTasks = tasks.filter { it.goalId == goal.id && it.parentTaskId == null }
-            val children = goals.filter { it.parentGoalId == goal.id }
-                .sortedBy { it.sortOrder }
-                .map { build(it) }
-            val progress = if (children.isNotEmpty()) {
-                val weights = children.map { 4 - it.goal.priority.coerceIn(1, 3) }
-                val totalWeight = weights.sum()
-                val fromChildren = if (totalWeight > 0) {
-                    children.map { it.progress }.zip(weights).sumOf { (p, w) -> p * w } / totalWeight
-                } else {
-                    children.map { it.progress }.average().toInt()
-                }
-                val ownScore = when {
-                    ownMilestones.isNotEmpty() -> ownMilestones.count { it.done } * 100 / ownMilestones.size
-                    ownTasks.isNotEmpty() -> ownTasks.count { it.status == TaskStatus.DONE } * 100 / ownTasks.size
-                    else -> null
-                }
-                if (ownScore != null) (fromChildren * 2 + ownScore) / 3 else fromChildren
-            } else {
-                when {
-                    ownMilestones.isNotEmpty() -> ownMilestones.count { it.done } * 100 / ownMilestones.size
-                    ownTasks.isNotEmpty() -> ownTasks.count { it.status == TaskStatus.DONE } * 100 / ownTasks.size
-                    else -> goal.progressPercent
-                }
-            }
-            GoalNode(
-                goal = goal,
-                milestones = ownMilestones,
-                children = children,
-                tasksTotal = ownTasks.size,
-                tasksDone = ownTasks.count { it.status == TaskStatus.DONE },
-                progress = progress
-            )
-        }
-
         goals.filter { it.parentGoalId == null }
             .sortedBy { it.sortOrder }
-            .map { build(it) }
+            .map { buildNode(it, goals, milestones, tasks) }
+    }
+
+    /** Progress: milestones, else tasks, blended with the weighted progress of sub-goals. */
+    private fun buildNode(
+        goal: Goal,
+        allGoals: List<Goal>,
+        allMilestones: List<Milestone>,
+        allTasks: List<com.manzil.app.data.local.entity.Task>
+    ): GoalNode {
+        val ownMilestones = allMilestones.filter { it.goalId == goal.id }.sortedBy { it.sortOrder }
+        val ownTasks = allTasks.filter { it.goalId == goal.id && it.parentTaskId == null }
+        val children = allGoals.filter { it.parentGoalId == goal.id }
+            .sortedBy { it.sortOrder }
+            .map { buildNode(it, allGoals, allMilestones, allTasks) }
+        val ownScore = when {
+            ownMilestones.isNotEmpty() -> ownMilestones.count { it.done } * 100 / ownMilestones.size
+            ownTasks.isNotEmpty() -> ownTasks.count { it.status == TaskStatus.DONE } * 100 / ownTasks.size
+            else -> null
+        }
+        val progress = if (children.isNotEmpty()) {
+            val weights = children.map { 4 - it.goal.priority.coerceIn(1, 3) }
+            val totalWeight = weights.sum()
+            val fromChildren = if (totalWeight > 0) {
+                children.map { it.progress }.zip(weights).sumOf { (score, weight) -> score * weight } / totalWeight
+            } else {
+                children.map { it.progress }.average().toInt()
+            }
+            if (ownScore != null) (fromChildren * 2 + ownScore) / 3 else fromChildren
+        } else {
+            ownScore ?: goal.progressPercent
+        }
+        return GoalNode(
+            goal = goal,
+            milestones = ownMilestones,
+            children = children,
+            tasksTotal = ownTasks.size,
+            tasksDone = ownTasks.count { it.status == TaskStatus.DONE },
+            progress = progress
+        )
     }
 
     /** Flat list of every active goal with its computed progress — used by pickers. */

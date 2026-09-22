@@ -32,6 +32,7 @@ import com.manzil.app.data.local.entity.JournalEntry
 import com.manzil.app.data.local.entity.Milestone
 import com.manzil.app.data.local.entity.Task
 import com.manzil.app.data.local.entity.TaskInstance
+import com.manzil.app.data.local.entity.TimeEntry
 import com.manzil.app.data.local.entity.TaskStatus
 import com.manzil.app.data.prefs.SettingsRepository
 import com.manzil.app.domain.model.DayTask
@@ -65,6 +66,7 @@ class ManzilRepository @Inject constructor(
     private val goalDao: GoalDao,
     private val taskDao: TaskDao,
     private val calendarDao: CalendarDao,
+    private val timeDao: TimeDao,
     private val reviewDao: ReviewDao,
     private val habitDao: HabitDao,
     private val kpiDao: KpiDao,
